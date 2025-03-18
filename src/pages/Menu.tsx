@@ -160,12 +160,12 @@ const Menu = () => {
   }, []);
   
   useEffect(() => {
-    // More reliable approach to scroll to top when tab changes
+    // Scroll to top when tab changes
     setTimeout(() => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
+      const menuTop = document.getElementById('menu-top');
+      if (menuTop) {
+        menuTop.scrollIntoView({ behavior: 'smooth' });
+      }
     }, 50);
   }, [activeCategory]);
   
