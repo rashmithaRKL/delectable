@@ -161,9 +161,10 @@ const Menu = () => {
   
   useEffect(() => {
     // Scroll to top of menu section when tab changes
-    if (sectionRef.current) {
-      sectionRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   }, [activeCategory]);
   
   const handleTabChange = (value: string) => {
@@ -194,7 +195,7 @@ const Menu = () => {
           value={activeCategory}
           className="w-full max-w-3xl mx-auto mb-12"
         >
-          <TabsList className="w-full grid grid-cols-2 md:grid-cols-4 bg-muted/50 p-1 rounded-xl">
+          <TabsList className="w-full grid grid-cols-2 md:grid-cols-4 bg-muted/50 p-1 rounded-xl mb-4 sticky top-20 z-10 backdrop-blur-sm">
             <TabsTrigger 
               value="starters"
               className="data-[state=active]:bg-restaurant-burgundy data-[state=active]:text-white transition-all duration-300"
