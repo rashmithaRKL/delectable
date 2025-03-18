@@ -93,7 +93,7 @@ const menuItems = {
     },
     {
       id: 11,
-      name: 'Sommelier's Red Wine Selection',
+      name: "Sommelier's Red Wine Selection",
       description: 'Ask your server about our rotating premium red wine selection.',
       price: '$16',
       imageUrl: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
