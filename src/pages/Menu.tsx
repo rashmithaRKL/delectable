@@ -160,11 +160,13 @@ const Menu = () => {
   }, []);
   
   useEffect(() => {
-    // Scroll to top of menu section when tab changes
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+    // More reliable approach to scroll to top when tab changes
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }, 50);
   }, [activeCategory]);
   
   const handleTabChange = (value: string) => {
@@ -172,7 +174,7 @@ const Menu = () => {
   };
   
   return (
-    <div className="min-h-screen pt-24 pb-20" ref={sectionRef}>
+    <div className="min-h-screen pt-24 pb-20" ref={sectionRef} id="menu-top">
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center mb-12">
           <h1 
