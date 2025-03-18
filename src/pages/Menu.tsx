@@ -1,6 +1,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import MenuCard from '@/components/MenuCard';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { motion } from 'framer-motion';
 
 // Menu data
 const menuItems = {
@@ -114,7 +116,29 @@ const Menu = () => {
   const [activeCategory, setActiveCategory] = useState('starters');
   const titleRef = useRef<HTMLHeadingElement>(null);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
-  const categoriesRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  
+  // Animation variants for staggered children
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+  
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5
+      }
+    }
+  };
   
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -128,17 +152,26 @@ const Menu = () => {
     
     if (titleRef.current) observer.observe(titleRef.current);
     if (descriptionRef.current) observer.observe(descriptionRef.current);
-    if (categoriesRef.current) observer.observe(categoriesRef.current);
     
     return () => {
       if (titleRef.current) observer.unobserve(titleRef.current);
       if (descriptionRef.current) observer.unobserve(descriptionRef.current);
-      if (categoriesRef.current) observer.unobserve(categoriesRef.current);
     };
   }, []);
   
+  useEffect(() => {
+    // Scroll to top of menu section when tab changes
+    if (sectionRef.current) {
+      sectionRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [activeCategory]);
+  
+  const handleTabChange = (value: string) => {
+    setActiveCategory(value);
+  };
+  
   return (
-    <div className="min-h-screen pt-24 pb-20">
+    <div className="min-h-screen pt-24 pb-20" ref={sectionRef}>
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center mb-12">
           <h1 
@@ -155,65 +188,131 @@ const Menu = () => {
           </p>
         </div>
         
-        <div 
-          ref={categoriesRef}
-          className="flex flex-wrap justify-center gap-4 mb-12 opacity-0 translate-y-10 transition-all duration-700 delay-500"
+        <Tabs 
+          defaultValue="starters" 
+          onValueChange={handleTabChange}
+          value={activeCategory}
+          className="w-full max-w-3xl mx-auto mb-12"
         >
-          <button
-            onClick={() => setActiveCategory('starters')}
-            className={`px-6 py-2 rounded-full transition-colors ${
-              activeCategory === 'starters'
-                ? 'bg-restaurant-burgundy text-white'
-                : 'bg-muted hover:bg-muted/80'
-            }`}
-          >
-            Starters
-          </button>
-          <button
-            onClick={() => setActiveCategory('mains')}
-            className={`px-6 py-2 rounded-full transition-colors ${
-              activeCategory === 'mains'
-                ? 'bg-restaurant-burgundy text-white'
-                : 'bg-muted hover:bg-muted/80'
-            }`}
-          >
-            Main Courses
-          </button>
-          <button
-            onClick={() => setActiveCategory('desserts')}
-            className={`px-6 py-2 rounded-full transition-colors ${
-              activeCategory === 'desserts'
-                ? 'bg-restaurant-burgundy text-white'
-                : 'bg-muted hover:bg-muted/80'
-            }`}
-          >
-            Desserts
-          </button>
-          <button
-            onClick={() => setActiveCategory('drinks')}
-            className={`px-6 py-2 rounded-full transition-colors ${
-              activeCategory === 'drinks'
-                ? 'bg-restaurant-burgundy text-white'
-                : 'bg-muted hover:bg-muted/80'
-            }`}
-          >
-            Drinks
-          </button>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {menuItems[activeCategory as keyof typeof menuItems].map((item, index) => (
-            <MenuCard 
-              key={item.id}
-              name={item.name}
-              description={item.description}
-              price={item.price}
-              imageUrl={item.imageUrl}
-              category={item.category}
-              index={index}
-            />
-          ))}
-        </div>
+          <TabsList className="w-full grid grid-cols-2 md:grid-cols-4 bg-muted/50 p-1 rounded-xl">
+            <TabsTrigger 
+              value="starters"
+              className="data-[state=active]:bg-restaurant-burgundy data-[state=active]:text-white transition-all duration-300"
+            >
+              Starters
+            </TabsTrigger>
+            <TabsTrigger 
+              value="mains"
+              className="data-[state=active]:bg-restaurant-burgundy data-[state=active]:text-white transition-all duration-300"
+            >
+              Main Courses
+            </TabsTrigger>
+            <TabsTrigger 
+              value="desserts"
+              className="data-[state=active]:bg-restaurant-burgundy data-[state=active]:text-white transition-all duration-300"
+            >
+              Desserts
+            </TabsTrigger>
+            <TabsTrigger 
+              value="drinks"
+              className="data-[state=active]:bg-restaurant-burgundy data-[state=active]:text-white transition-all duration-300"
+            >
+              Drinks
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="starters" className="mt-8">
+            <motion.div 
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              key="starters-tab"
+            >
+              {menuItems.starters.map((item, index) => (
+                <motion.div key={item.id} variants={itemVariants}>
+                  <MenuCard 
+                    name={item.name}
+                    description={item.description}
+                    price={item.price}
+                    imageUrl={item.imageUrl}
+                    category={item.category}
+                    index={index}
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
+          </TabsContent>
+          
+          <TabsContent value="mains" className="mt-8">
+            <motion.div 
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              key="mains-tab"
+            >
+              {menuItems.mains.map((item, index) => (
+                <motion.div key={item.id} variants={itemVariants}>
+                  <MenuCard 
+                    name={item.name}
+                    description={item.description}
+                    price={item.price}
+                    imageUrl={item.imageUrl}
+                    category={item.category}
+                    index={index}
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
+          </TabsContent>
+          
+          <TabsContent value="desserts" className="mt-8">
+            <motion.div 
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              key="desserts-tab"
+            >
+              {menuItems.desserts.map((item, index) => (
+                <motion.div key={item.id} variants={itemVariants}>
+                  <MenuCard 
+                    name={item.name}
+                    description={item.description}
+                    price={item.price}
+                    imageUrl={item.imageUrl}
+                    category={item.category}
+                    index={index}
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
+          </TabsContent>
+          
+          <TabsContent value="drinks" className="mt-8">
+            <motion.div 
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              key="drinks-tab"
+            >
+              {menuItems.drinks.map((item, index) => (
+                <motion.div key={item.id} variants={itemVariants}>
+                  <MenuCard 
+                    name={item.name}
+                    description={item.description}
+                    price={item.price}
+                    imageUrl={item.imageUrl}
+                    category={item.category}
+                    index={index}
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
