@@ -12,6 +12,7 @@ You can view the live website here: Visit Tranquil Haven
 (https://rashmitharkl.github.io/delectable/)
 
 Features
+
 🍽️ Elegant restaurant website layout with a focus on user experience
 
 📖 Engaging "Our Story" section detailing the restaurant's heritage
@@ -25,6 +26,7 @@ Features
 ⚡ Smooth, fast, and responsive performance powered by TypeScript
 
 🎨 Clean, modern UI/UX with beautiful typography and animations
+
 
 How to Run Locally
 
